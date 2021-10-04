@@ -8,4 +8,5 @@ import lombok.Getter;
 public class ReservationAcceptedEvent {
   private String reservationId;
   private long conferenceId;
+  private int numberOfSeats;
 }
