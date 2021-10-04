@@ -2,6 +2,7 @@ package io.mars.et.xiaoyi.sagas;
 
 import io.mars.et.xiaoyi.commands.MakeSeatReservationCommand;
 import io.mars.et.xiaoyi.commands.MarkOrderAsBookedCommand;
+import io.mars.et.xiaoyi.commands.RejectOrderCommand;
 import io.mars.et.xiaoyi.events.OrderPlacedEvent;
 import io.mars.et.xiaoyi.events.ReservationAcceptedEvent;
 import io.mars.et.xiaoyi.events.ReservationRejectedEvent;
@@ -59,8 +60,7 @@ public class RegistrationProcessManager {
   public void handler(ReservationRejectedEvent message) {
     if(this.state == ProcessState.AWAITING_RESERVATION_CONFIRMATION) {
       this.state = ProcessState.COMPLETED;
-      commandGateway.send(new MarkOrderAsBookedCommand(this.orderId));
-      // TODO: deadline handler
+      commandGateway.send(new RejectOrderCommand(this.orderId));
     } else {
       throw new InvalidOperationException();
     }

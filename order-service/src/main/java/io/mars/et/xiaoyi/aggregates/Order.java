@@ -1,7 +1,12 @@
 package io.mars.et.xiaoyi.aggregates;
 
+import io.mars.et.xiaoyi.commands.MarkOrderAsBookedCommand;
 import io.mars.et.xiaoyi.commands.RegisterToConferenceCommand;
+import io.mars.et.xiaoyi.commands.RejectOrderCommand;
+import io.mars.et.xiaoyi.events.OrderBookedEvent;
 import io.mars.et.xiaoyi.events.OrderPlacedEvent;
+import io.mars.et.xiaoyi.events.OrderRejectedEvent;
+import io.mars.et.xiaoyi.exceptions.InvalidOperationException;
 import lombok.Data;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -45,6 +50,32 @@ public class Order {
     event.getSeats().forEach(seat -> orderItems.add(
         new OrderItem(seat.getOrderItemId(), seat.getTypeId(), seat.getQuantity())
     ));
+  }
+
+  @CommandHandler
+  public void handle(MarkOrderAsBookedCommand command) {
+    if (this.state != State.CREATED) {
+      throw new InvalidOperationException();
+    }
+    apply(new OrderBookedEvent(command.getOrderId()));
+  }
+
+  @EventSourcingHandler
+  public void on(OrderBookedEvent event) {
+    this.state = State.BOOKED;
+  }
+
+  @CommandHandler
+  public void handle(RejectOrderCommand command) {
+    if (this.state != State.CREATED) {
+      throw new InvalidOperationException();
+    }
+    apply(new OrderBookedEvent(command.getOrderId()));
+  }
+
+  @EventSourcingHandler
+  public void on(OrderRejectedEvent event) {
+    this.state = State.REJECTED;
   }
 
   protected Order() {

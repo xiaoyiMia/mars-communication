@@ -2,9 +2,10 @@ package io.mars.et.xiaoyi.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class MakeSeatReservationCommand {
   @TargetAggregateIdentifier
