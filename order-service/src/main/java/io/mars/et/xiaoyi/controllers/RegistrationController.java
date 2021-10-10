@@ -1,13 +1,11 @@
 package io.mars.et.xiaoyi.controllers;
 
-import io.mars.et.xiaoyi.controllers.dto.RegistrationOrderRequest;
+import io.mars.et.xiaoyi.controllers.dto.ConcertOrderRequest;
 import io.mars.et.xiaoyi.controllers.mappers.RegistrationOrderMapper;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RegistrationController {
@@ -21,8 +19,11 @@ public class RegistrationController {
     this.mapper = mapper;
   }
 
-  @PostMapping("/conferences/{conferenceId}/registration")
-  public void registerToConference(@RequestBody @NonNull  RegistrationOrderRequest request) {
-    commandGateway.send(mapper.requestToRegisterCommand(request));
+  @PostMapping("/concerts/{concertId}/order")
+  public void registerToConference(
+      @RequestBody @NonNull ConcertOrderRequest request,
+      @PathVariable("concertId") String concertId
+  ) {
+    commandGateway.send(mapper.requestToRegisterCommand(concertId, request));
   }
 }

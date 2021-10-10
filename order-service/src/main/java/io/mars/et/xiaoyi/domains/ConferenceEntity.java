@@ -1,4 +1,4 @@
-package io.mars.et.xiaoyi.domain;
+package io.mars.et.xiaoyi.domains;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package io.mars.et.xiaoyi.repositories;
 
-import io.mars.et.xiaoyi.domain.ConferenceEntity;
+import io.mars.et.xiaoyi.domains.ConferenceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

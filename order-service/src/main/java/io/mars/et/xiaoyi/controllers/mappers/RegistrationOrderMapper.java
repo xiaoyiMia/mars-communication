@@ -1,8 +1,8 @@
 package io.mars.et.xiaoyi.controllers.mappers;
 
-import io.mars.et.xiaoyi.commands.RegisterToConferenceCommand;
-import io.mars.et.xiaoyi.controllers.dto.RegistrationOrderRequest;
+import io.mars.et.xiaoyi.commands.PlaceConcertOrderCommand;
+import io.mars.et.xiaoyi.controllers.dto.ConcertOrderRequest;
 
 public interface RegistrationOrderMapper {
-  RegisterToConferenceCommand requestToRegisterCommand(RegistrationOrderRequest request);
+  PlaceConcertOrderCommand requestToRegisterCommand(String concertId, ConcertOrderRequest request);
 }

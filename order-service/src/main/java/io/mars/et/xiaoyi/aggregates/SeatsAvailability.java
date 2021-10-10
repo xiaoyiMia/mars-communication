@@ -1,6 +1,7 @@
 package io.mars.et.xiaoyi.aggregates;
 
 import io.mars.et.xiaoyi.commands.MakeSeatReservationCommand;
+import io.mars.et.xiaoyi.common.ID;
 import io.mars.et.xiaoyi.events.ReservationAcceptedEvent;
 import io.mars.et.xiaoyi.events.ReservationRejectedEvent;
 import lombok.Data;
@@ -15,7 +16,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 @Data
 public class SeatsAvailability {
   @AggregateIdentifier
-  private long conferenceId;
+  private ID conferenceId;
   private int remainingSeats;
 
   @CommandHandler

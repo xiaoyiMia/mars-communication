@@ -1,12 +1,14 @@
 package io.mars.et.xiaoyi.commands;
 
-import lombok.AllArgsConstructor;
+import io.mars.et.xiaoyi.common.ID;
 import lombok.Getter;
-import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
+/**
+ * payload of the Command to change the order's status to booked.
+ */
 @Getter
-@AllArgsConstructor
-public class MarkOrderAsBookedCommand {
-  @TargetAggregateIdentifier
-  private final String orderId;
+public class MarkOrderAsBookedCommand extends OrderCommand {
+  public MarkOrderAsBookedCommand(ID orderId) {
+    super(orderId);
+  }
 }

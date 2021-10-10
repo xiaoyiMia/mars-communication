@@ -1,10 +1,12 @@
 package io.mars.et.xiaoyi.aggregates;
 
 import io.mars.et.xiaoyi.commands.MarkOrderAsBookedCommand;
-import io.mars.et.xiaoyi.commands.RegisterToConferenceCommand;
+import io.mars.et.xiaoyi.commands.PlaceConcertOrderCommand;
 import io.mars.et.xiaoyi.commands.RejectOrderCommand;
+import io.mars.et.xiaoyi.common.ID;
+import io.mars.et.xiaoyi.domains.IConcertOrder;
 import io.mars.et.xiaoyi.events.OrderBookedEvent;
-import io.mars.et.xiaoyi.events.OrderPlacedEvent;
+import io.mars.et.xiaoyi.events.ConcertOrderPlacedEvent;
 import io.mars.et.xiaoyi.events.OrderRejectedEvent;
 import io.mars.et.xiaoyi.exceptions.InvalidOperationException;
 import lombok.Data;
@@ -16,39 +18,37 @@ import org.axonframework.spring.stereotype.Aggregate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Aggregate
 @Data
-public class Order {
+public class ConcertOrder implements IConcertOrder {
   @AggregateIdentifier
-  private String orderId; // Cannot be updated
+  private ID orderId; // Cannot be updated
+  private ID concertId;
   private State state;
 
   @AggregateMember
-  private List<OrderItem> orderItems = new ArrayList<>();
+  private List<ConcertOrderItem> seatReservations = new ArrayList<>();
 
   @CommandHandler
-  public Order(RegisterToConferenceCommand orderCommand) {
+  public ConcertOrder(PlaceConcertOrderCommand orderCommand) {
     // Raise an event
-    apply(new OrderPlacedEvent(
+    apply(new ConcertOrderPlacedEvent(
         orderCommand.getOrderId(),
-        orderCommand.getConferenceId(),
-        orderCommand.getBookedSeats().stream()
-            .map(seat -> new OrderPlacedEvent.Seat(UUID.randomUUID().toString(), seat.getTypeId(), seat.getQuantity()))
-            .collect(Collectors.toList())
+        orderCommand.getConcertId(),
+        orderCommand.getSeatReservations()
     ));
   }
 
   @EventSourcingHandler
-  public void on(OrderPlacedEvent event) {
+  public void on(ConcertOrderPlacedEvent event) {
     this.orderId = event.getOrderId();
+    this.concertId = event.getConcertId();
     this.state = State.CREATED;
-    event.getSeats().forEach(seat -> orderItems.add(
-        new OrderItem(seat.getOrderItemId(), seat.getTypeId(), seat.getQuantity())
+    event.getSeatReservations().forEach(seat -> seatReservations.add(
+        new ConcertOrderItem(seat.getOrderItemId(), seat.getSeatTypeId(), seat.getQuantity())
     ));
   }
 
@@ -70,7 +70,7 @@ public class Order {
     if (this.state != State.CREATED) {
       throw new InvalidOperationException();
     }
-    apply(new OrderBookedEvent(command.getOrderId()));
+    apply(new OrderRejectedEvent(command.getOrderId()));
   }
 
   @EventSourcingHandler
@@ -78,7 +78,7 @@ public class Order {
     this.state = State.REJECTED;
   }
 
-  protected Order() {
+  protected ConcertOrder() {
   }
 
   private enum State {

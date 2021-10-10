@@ -1,10 +1,14 @@
 package io.mars.et.xiaoyi.events;
 
-import lombok.AllArgsConstructor;
+import io.mars.et.xiaoyi.common.ID;
 import lombok.Getter;
 
+/**
+ * The payload of the order booked event.
+ */
 @Getter
-@AllArgsConstructor
-public class OrderBookedEvent {
-  private String orderId;
+public class OrderBookedEvent extends OrderEvent {
+  public OrderBookedEvent(ID orderId) {
+    super(orderId);
+  }
 }
