@@ -1,7 +1,7 @@
 package io.mars.et.xiaoyi.controllers.mappers;
 
 import io.mars.et.xiaoyi.controllers.dto.Conference;
-import io.mars.et.xiaoyi.domain.ConferenceEntity;
+import io.mars.et.xiaoyi.domains.ConferenceEntity;
 import org.springframework.stereotype.Component;
 
 @Component

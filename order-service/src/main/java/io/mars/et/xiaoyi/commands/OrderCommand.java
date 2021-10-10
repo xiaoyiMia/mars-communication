@@ -1,19 +1,21 @@
 package io.mars.et.xiaoyi.commands;
 
 import io.mars.et.xiaoyi.common.ID;
+import io.mars.et.xiaoyi.domains.IOrder;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 /**
- * The payload of command to make seat reservation
+ * The payload of the command to an IConcertOrder.
  */
 @Getter
 @AllArgsConstructor
-public class MakeSeatReservationCommand {
+public abstract class OrderCommand implements IOrder {
+  private final ID orderId;
+
   @TargetAggregateIdentifier
-  private final ID conferenceId; //Cannot change
-  private final ID reservationId;
-  private final int numberOfSeats;
+  public ID getOrderId() {
+    return orderId;
+  }
 }
