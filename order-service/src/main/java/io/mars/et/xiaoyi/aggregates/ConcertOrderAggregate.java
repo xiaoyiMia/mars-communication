@@ -23,17 +23,16 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Aggregate
 @Data
-public class ConcertOrder implements IConcertOrder {
+public class ConcertOrderAggregate implements IConcertOrder {
   @AggregateIdentifier
   private ID orderId; // Cannot be updated
   private ID concertId;
   private State state;
-
   @AggregateMember
-  private List<ConcertOrderItem> seatReservations = new ArrayList<>();
+  private List<ConcertOrderItemEntity> seatReservations = new ArrayList<>();
 
   @CommandHandler
-  public ConcertOrder(PlaceConcertOrderCommand orderCommand) {
+  public ConcertOrderAggregate(PlaceConcertOrderCommand orderCommand) {
     // Raise an event
     apply(new ConcertOrderPlacedEvent(
         orderCommand.getOrderId(),
@@ -48,7 +47,7 @@ public class ConcertOrder implements IConcertOrder {
     this.concertId = event.getConcertId();
     this.state = State.CREATED;
     event.getSeatReservations().forEach(seat -> seatReservations.add(
-        new ConcertOrderItem(seat.getOrderItemId(), seat.getSeatTypeId(), seat.getQuantity())
+        new ConcertOrderItemEntity(seat.getOrderItemId(), seat.getSeatTypeId(), seat.getQuantity())
     ));
   }
 
@@ -67,7 +66,7 @@ public class ConcertOrder implements IConcertOrder {
 
   @CommandHandler
   public void handle(RejectOrderCommand command) {
-    if (this.state != State.CREATED) {
+    if (this.state == State.CONFIRMED) {
       throw new InvalidOperationException();
     }
     apply(new OrderRejectedEvent(command.getOrderId()));
@@ -78,7 +77,7 @@ public class ConcertOrder implements IConcertOrder {
     this.state = State.REJECTED;
   }
 
-  protected ConcertOrder() {
+  protected ConcertOrderAggregate() {
   }
 
   private enum State {
