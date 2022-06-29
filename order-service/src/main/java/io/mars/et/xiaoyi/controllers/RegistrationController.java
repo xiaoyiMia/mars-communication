@@ -5,7 +5,10 @@ import io.mars.et.xiaoyi.controllers.mappers.RegistrationOrderMapper;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RegistrationController {
@@ -18,6 +21,14 @@ public class RegistrationController {
     this.commandGateway = commandGateway;
     this.mapper = mapper;
   }
+
+  @PostMapping("/concerts/{concertId}/cart")
+  public void createCart(
+      @PathVariable("concertId") String concertId
+  ) {
+
+  }
+
 
   @PostMapping("/concerts/{concertId}/order")
   public void registerToConference(
